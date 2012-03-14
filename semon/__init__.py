@@ -168,11 +168,14 @@ class SemanticOntology(object):
                         if type(val) == rdflib.Literal and val.language:
                             lang = val.language
                         if all_lang or lang is None or lang == 'en':
-                            values.append(val.n3())
+                            tmp = str(val.n3().encode('utf-8'))
+                            #print tmp
+                            values.append(tmp)
                     value = values
                 if len(value) == 1:
                     value = value[0]
                 if value:
+                    #print value
                     config.set(entry, key, value)
         return config
 
@@ -274,16 +277,62 @@ class SemanticOntology(object):
         config.write(stream)
         stream.close()
 
+class SemanticOntologyUi(object):
+    """ User interface class which will be the target of the entry_point.
+    """
+
+    def setup_parser(self):
+        """ Command line parser. """
+        self.parser = argparse.ArgumentParser(usage='%(prog)s [options]',
+                prog='pySemon')
+        self.parser.add_argument('--version', action='version',
+            version='%(prog)s ' + __version__)
+        self.parser.add_argument('name',
+            help='Name of the ontology you are using.')
+        self.parser.add_argument('ontology',
+            help='URL/path to the ontology.')
+        self.parser.add_argument('--input', default='owl',
+            help='Format of the input file (can be owl, text - '
+            'Default: owl)')
+        self.parser.add_argument('--output', default='owl',
+            help='Format of the output file (can be owl, text - '
+            'Default: owl)')
+        self.parser.add_argument('--all-language', action='store_true',
+            help='For text output, return all languages or just english - '
+            'Default: False)')
+        self.parser.add_argument('--verbose', action='store_true',
+            help='Give more info about what is going on.')
+        self.parser.add_argument('--debug', action='store_true',
+            help='Output bunches of debugging info.')
+
+    def main(self):
+        """ Main function.
+        Entry point of the program.
+        """
+        self.setup_parser()
+        args = self.parser.parse_args()
+
+        so = SemanticOntology()
+        if args.input == 'text':
+            so.load_text(args.name, args.ontology)
+        else:
+            so.load_owl(args.name, args.ontology)
+
+        if args.output == 'text':
+            so.to_text(args.all_language)
+        else:
+            so.to_owl()
 
 if __name__ == '__main__':
     so = SemanticOntology()
     #so.load_owl('doap', 'https://raw.github.com/edumbill/doap/master/schema/doap.rdf')
-    so.load_text('FedDoap', 'test.onto')
+    so.load_owl('doap', 'http://usefulinc.com/ns/doap#')
+    #so.load_text('FedDoap', 'test.onto')
     #print so.get_ontology_info()
-    for c in so.get_class_names():
-        print c
+    #for c in so.get_class_names():
+        #print c
     #for c in so.get_property_names():
         #print c
-    #so.to_text()
+    so.to_text()
     #so.to_text(False)
-    so.to_owl()
+    #so.to_owl()
