@@ -90,36 +90,36 @@ class SemanticOntologyTests(unittest.TestCase):
         so = semon.SemanticOntology()
         so.load_text('FedDoap', 'test.onto')
         classes = so.get_classes()
-        self.assertEqual('', classes[][])
-        self.assertEqual('', classes[][])
-        self.assertEqual('', classes[][])
+        self.assertEqual('', classes)
+        self.assertEqual('', classes)
+        self.assertEqual('', classes)
 
     def test_get_properties(self):
         """ Test the get_properties function. """
         so = semon.SemanticOntology()
         so.load_text('FedDoap', 'test.onto')
         properties = so.get_classes()
-        self.assertEqual('', properties[][])
-        self.assertEqual('', properties[][])
-        self.assertEqual('', properties[][])
+        self.assertEqual('', properties)
+        self.assertEqual('', properties)
+        self.assertEqual('', properties)
 
     def test_get_ontology_info(self):
         """ Test the get_ontology_info function. """
         so = semon.SemanticOntology()
         so.load_text('FedDoap', 'test.onto')
         infos = so.get_ontology_info()
-        self.assertEqual('', infos[][])
-        self.assertEqual('', infos[][])
-        self.assertEqual('', infos[][])
+        self.assertEqual('', infos)
+        self.assertEqual('', infos)
+        self.assertEqual('', infos)
 
     def test_get_info(self):
         """ Test the get_info function. """
         so = semon.SemanticOntology()
         so.load_text('FedDoap', 'test.onto')
         infos = so.get_info('')
-        self.assertEqual('', infos[][])
-        self.assertEqual('', infos[][])
-        self.assertEqual('', infos[][])
+        self.assertEqual('', infos)
+        self.assertEqual('', infos)
+        self.assertEqual('', infos)
 
     def test_get_uri(self):
         """ Test the get_uri function. """
