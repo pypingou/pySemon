@@ -3,7 +3,7 @@ import sys
 import re
 
 from setuptools import setup
-from pypi2spec import __version__
+from semon import __version__
 
 description = "Small library to read/convert from XML to INI ontology file."
 
@@ -15,6 +15,7 @@ download_url = "http://github.com/pypingou/pySemon-%s.tar.gz" % __version__
 
 requirements = [
     'rdflib',
+    'kitchen',
 ]
 
 try:
@@ -34,6 +35,7 @@ setup(
     license="GPLv3+",
     long_description=long_description,
     download_url=download_url,
+    package_dir = {'pySemon': 'semon'},
     packages=['pySemon'],
     install_requires=requirements,
     entry_points="""
