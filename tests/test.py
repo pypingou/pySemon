@@ -17,6 +17,7 @@ Unit-tests file for pySemon.
 """
 
 import os
+import rdflib
 import sys
 import unittest
 
@@ -38,12 +39,12 @@ class SemanticOntologyTests(unittest.TestCase):
         """ Constructor. """
         unittest.TestCase.__init__(self, methodName)
 
-    def tearDownClass(self):
-        """ Remove file created by running the tests. """
-        if os.path.exists('FedDoap.owl'):
-            os.remove('FedDoap.owl')
-        if os.path.exists('FedDoap.onto'):
-            os.remove('FedDoap.onto')
+    #def tearDownClass(self):
+        #""" Remove file created by running the tests. """
+        #if os.path.exists('FedDoap.owl'):
+            #os.remove('FedDoap.owl')
+        #if os.path.exists('FedDoap.onto'):
+            #os.remove('FedDoap.onto')
 
     def test_load_text(self):
         """ Test the load_text function. """
@@ -77,55 +78,59 @@ class SemanticOntologyTests(unittest.TestCase):
         """ Test the get_class_names function. """
         so = semon.SemanticOntology()
         so.load_text('FedDoap', 'test.onto')
-        self.assertEqual([''], so.get_class_names())
+        self.assertEqual(['feddoap:Package'], so.get_class_names())
 
     def test_get_property_name(self):
         """ Test the get_class_names function. """
         so = semon.SemanticOntology()
         so.load_text('FedDoap', 'test.onto')
-        self.assertEqual([''], so.get_property_names())
+        self.assertEqual(['feddoap:PackageMaintainer'],
+            so.get_property_names())
 
     def test_get_classes(self):
         """ Test the get_classes function. """
         so = semon.SemanticOntology()
         so.load_text('FedDoap', 'test.onto')
         classes = so.get_classes()
-        self.assertEqual('', classes)
-        self.assertEqual('', classes)
-        self.assertEqual('', classes)
+        self.assertEqual(['"Package"@en'],
+            classes['feddoap:Package']['rdfs:label'])
+        self.assertEqual(['"A package is a pre-built, distributable, project."@en'],
+            classes['feddoap:Package']['rdfs:comment'])
 
     def test_get_properties(self):
         """ Test the get_properties function. """
         so = semon.SemanticOntology()
         so.load_text('FedDoap', 'test.onto')
-        properties = so.get_classes()
-        self.assertEqual('', properties)
-        self.assertEqual('', properties)
-        self.assertEqual('', properties)
+        properties = so.get_properties()
+        self.assertEqual(['"Package maintainer"@en'],
+            properties['feddoap:PackageMaintainer']['rdfs:label'])
+        self.assertEqual(['"The maintainer of a packager."@en'],
+            properties['feddoap:PackageMaintainer']['rdfs:comment'])
 
     def test_get_ontology_info(self):
         """ Test the get_ontology_info function. """
         so = semon.SemanticOntology()
         so.load_text('FedDoap', 'test.onto')
         infos = so.get_ontology_info()
-        self.assertEqual('', infos)
-        self.assertEqual('', infos)
-        self.assertEqual('', infos)
+        self.assertEqual({}, infos)
 
     def test_get_info(self):
         """ Test the get_info function. """
         so = semon.SemanticOntology()
         so.load_text('FedDoap', 'test.onto')
-        infos = so.get_info('')
-        self.assertEqual('', infos)
-        self.assertEqual('', infos)
-        self.assertEqual('', infos)
+        uri = rdflib.term.URIRef(
+            'http://fedoraproject.org/ontologies/feddoap#Package')
+        infos = so.get_info(uri)
+        self.assertEqual(['"Package"@en'],
+            infos['rdfs:label'])
+        self.assertEqual(['"A package is a pre-built, distributable, project."@en'],
+            infos['rdfs:comment'])
 
     def test_get_uri(self):
         """ Test the get_uri function. """
         so = semon.SemanticOntology()
         so.load_text('FedDoap', 'test.onto')
-        self.assertEqual('', so.get_uri())
+        self.assertEqual(None, so.get_uri())
 
 
 suite = unittest.TestLoader().loadTestsFromTestCase(SemanticOntologyTests)
