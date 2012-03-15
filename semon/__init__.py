@@ -192,22 +192,24 @@ class SemanticOntology(object):
         """ Return all the information known about the ontology.
         """
         infos = {}
-        subject = _get_key(self.get_uri())
-        infos[subject] = self.get_info(self.get_uri())
+        uri = self.get_uri()
+        if uri:
+            subject = _get_key(uri)
+            infos[subject] = self.get_info(uri)
         return infos
 
     def get_info(self, subject):
         """ Return as a dictionnary all the information known about a
         given subject.
 
-        :arg subject, URI used to query the graph and generate the dict
-        of information.
+        :arg subject, URIRef object used to query the graph and generate
+        the dict of information.
         """
         infos = {}
         for pred, obj in self.graph.predicate_objects(subject):
             key = _get_key(pred)
             if key in infos:
-                infos[key].append(obj.encode('utf-8')))
+                infos[key].append(str(obj.encode('utf-8')))
             else:
                 infos[key] = [str(obj.encode('utf-8'))]
         return infos
@@ -335,14 +337,18 @@ class SemanticOntologyUi(object):
 
 if __name__ == '__main__':
     so = SemanticOntology()
-    so.load_owl('doap', 'https://raw.github.com/pypingou/doap/master/schema/doap.rdf')
+    #so.load_owl('doap', 'https://raw.github.com/pypingou/doap/master/schema/doap.rdf')
     #so.load_owl('doap', 'http://usefulinc.com/ns/doap#')
-    #so.load_text('FedDoap', 'test.onto')
+    so.load_text('FedDoap', '../test.onto')
+    infos = so.get_info('http://fedoraproject.org/ontologies/feddoap#Package')
+    print infos
+    #for stmt in so.graph:
+        #print stmt
     #print so.get_ontology_info()
     #for c in so.get_class_names():
         #print c
     #for c in so.get_property_names():
         #print c
-    so.to_text()
+    #so.to_text()
     #so.to_text(False)
     #so.to_owl()
