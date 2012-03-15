@@ -30,6 +30,7 @@ else:
     folder = '.'
 
 ONTOFILE = '%s/test.onto' % folder
+OWLFILE = '%s/test.owl' % folder
 
 
 class SemanticOntologyTests(unittest.TestCase):
@@ -39,34 +40,35 @@ class SemanticOntologyTests(unittest.TestCase):
         """ Constructor. """
         unittest.TestCase.__init__(self, methodName)
 
-    #def tearDownClass(self):
-        #""" Remove file created by running the tests. """
-        #if os.path.exists('FedDoap.owl'):
-            #os.remove('FedDoap.owl')
-        #if os.path.exists('FedDoap.onto'):
-            #os.remove('FedDoap.onto')
+    @classmethod
+    def tearDownClass(self):
+        """ Remove file created by running the tests. """
+        if os.path.exists('FedDoap.owl'):
+            os.remove('FedDoap.owl')
+        if os.path.exists('FedDoap.onto'):
+            os.remove('FedDoap.onto')
 
     def test_load_text(self):
         """ Test the load_text function. """
         so = semon.SemanticOntology()
-        so.load_text('FedDoap', 'test.onto')
+        so.load_text('FedDoap', ONTOFILE)
 
     def test_to_text(self):
         """ Test the to_text function. """
         so = semon.SemanticOntology()
-        so.load_text('FedDoap', 'test.onto')
+        so.load_text('FedDoap', ONTOFILE)
         so.to_text(False)
 
     def test_to_owl(self):
         """ Test the to_text function. """
         so = semon.SemanticOntology()
-        so.load_text('FedDoap', 'test.onto')
+        so.load_text('FedDoap', ONTOFILE)
         so.to_owl()
 
     def test_load_owl(self):
         """ Test the load_owl function. """
         so = semon.SemanticOntology()
-        so.load_owl('FedDoap', 'FedDoap.owl')
+        so.load_owl('FedDoap', OWLFILE)
 
     def test_remove_load_owl(self):
         """ Test the load_owl function to a remote ontology. """
@@ -77,20 +79,20 @@ class SemanticOntologyTests(unittest.TestCase):
     def test_get_class_name(self):
         """ Test the get_class_names function. """
         so = semon.SemanticOntology()
-        so.load_text('FedDoap', 'test.onto')
+        so.load_text('FedDoap', ONTOFILE)
         self.assertEqual(['feddoap:Package'], so.get_class_names())
 
     def test_get_property_name(self):
         """ Test the get_class_names function. """
         so = semon.SemanticOntology()
-        so.load_text('FedDoap', 'test.onto')
+        so.load_text('FedDoap', ONTOFILE)
         self.assertEqual(['feddoap:PackageMaintainer'],
             so.get_property_names())
 
     def test_get_classes(self):
         """ Test the get_classes function. """
         so = semon.SemanticOntology()
-        so.load_text('FedDoap', 'test.onto')
+        so.load_text('FedDoap', ONTOFILE)
         classes = so.get_classes()
         self.assertEqual(['"Package"@en'],
             classes['feddoap:Package']['rdfs:label'])
@@ -100,7 +102,7 @@ class SemanticOntologyTests(unittest.TestCase):
     def test_get_properties(self):
         """ Test the get_properties function. """
         so = semon.SemanticOntology()
-        so.load_text('FedDoap', 'test.onto')
+        so.load_text('FedDoap', ONTOFILE)
         properties = so.get_properties()
         self.assertEqual(['"Package maintainer"@en'],
             properties['feddoap:PackageMaintainer']['rdfs:label'])
@@ -110,14 +112,14 @@ class SemanticOntologyTests(unittest.TestCase):
     def test_get_ontology_info(self):
         """ Test the get_ontology_info function. """
         so = semon.SemanticOntology()
-        so.load_text('FedDoap', 'test.onto')
+        so.load_text('FedDoap', ONTOFILE)
         infos = so.get_ontology_info()
         self.assertEqual({}, infos)
 
     def test_get_info(self):
         """ Test the get_info function. """
         so = semon.SemanticOntology()
-        so.load_text('FedDoap', 'test.onto')
+        so.load_text('FedDoap', ONTOFILE)
         uri = rdflib.term.URIRef(
             'http://fedoraproject.org/ontologies/feddoap#Package')
         infos = so.get_info(uri)
@@ -129,7 +131,7 @@ class SemanticOntologyTests(unittest.TestCase):
     def test_get_uri(self):
         """ Test the get_uri function. """
         so = semon.SemanticOntology()
-        so.load_text('FedDoap', 'test.onto')
+        so.load_text('FedDoap', ONTOFILE)
         self.assertEqual(None, so.get_uri())
 
 
