@@ -4,3 +4,14 @@ pySemon
 A python library to play with Semantic Ontology in OWL format.
 
 See: http://www.w3.org/TR/owl-guide/
+
+
+This library allows to convert OWL file to INI format and back.
+The idea was to give you a tool to easily create an OWL ontology
+but without having to deal with the XML directly, and of course
+do this in python (there are already tools available in Java,
+such as Protege: http://protege.stanford.edu/)
+
+Not everything is fully working yet, this is more a playground
+project to see how things can go.
+
