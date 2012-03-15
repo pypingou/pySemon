@@ -8,6 +8,8 @@ Reads in an ontology file and play with it.
 import ConfigParser
 import rdflib
 
+from kitchen.text.converters import to_bytes
+
 RDF = rdflib.Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#')
 RDFS = rdflib.Namespace('http://www.w3.org/2000/01/rdf-schema#')
 OWL = rdflib.Namespace('http://www.w3.org/2002/07/owl#')
@@ -168,15 +170,17 @@ class SemanticOntology(object):
                         if type(val) == rdflib.Literal and val.language:
                             lang = val.language
                         if all_lang or lang is None or lang == 'en':
-                            tmp = str(val.n3().encode('utf-8'))
-                            #print tmp
+                            try:
+                                tmp = val.n3()
+                            except AttributeError:
+                                tmp = val
+                            tmp = to_bytes(tmp)
                             values.append(tmp)
                     value = values
                 if len(value) == 1:
                     value = value[0]
                 if value:
-                    #print value
-                    config.set(entry, key, value)
+                    config.set(entry, to_bytes(key), value)
         return config
 
     def get_uri(self):
@@ -187,7 +191,10 @@ class SemanticOntology(object):
     def get_ontology_info(self):
         """ Return all the information known about the ontology.
         """
-        return self.get_info(self.get_uri())
+        infos = {}
+        subject = _get_key(self.get_uri())
+        infos[subject] = self.get_info(self.get_uri())
+        return infos
 
     def get_info(self, subject):
         """ Return as a dictionnary all the information known about a
@@ -200,9 +207,9 @@ class SemanticOntology(object):
         for pred, obj in self.graph.predicate_objects(subject):
             key = _get_key(pred)
             if key in infos:
-                infos[key].append(obj)
+                infos[key].append(obj.encode('utf-8')))
             else:
-                infos[key] = [obj]
+                infos[key] = [str(obj.encode('utf-8'))]
         return infos
 
     def get_class_names(self):
@@ -267,6 +274,9 @@ class SemanticOntology(object):
         config.add_section('Namespaces')
         for ns in NS:
             config.set('Namespaces', NS[ns], ns)
+        # Then we dump the ontology itself
+        infos = self.get_ontology_info()
+        config = self.__add_entries(infos, config, all_lang=all_lang)
         # Then we dump all the classes
         classes = self.get_classes()
         config = self.__add_entries(classes, config, all_lang=all_lang)
@@ -325,8 +335,8 @@ class SemanticOntologyUi(object):
 
 if __name__ == '__main__':
     so = SemanticOntology()
-    #so.load_owl('doap', 'https://raw.github.com/edumbill/doap/master/schema/doap.rdf')
-    so.load_owl('doap', 'http://usefulinc.com/ns/doap#')
+    so.load_owl('doap', 'https://raw.github.com/pypingou/doap/master/schema/doap.rdf')
+    #so.load_owl('doap', 'http://usefulinc.com/ns/doap#')
     #so.load_text('FedDoap', 'test.onto')
     #print so.get_ontology_info()
     #for c in so.get_class_names():
