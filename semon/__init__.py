@@ -10,6 +10,8 @@ import rdflib
 
 from kitchen.text.converters import to_bytes
 
+__version__ = '0.1.0'
+
 RDF = rdflib.Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#')
 RDFS = rdflib.Namespace('http://www.w3.org/2000/01/rdf-schema#')
 OWL = rdflib.Namespace('http://www.w3.org/2002/07/owl#')
